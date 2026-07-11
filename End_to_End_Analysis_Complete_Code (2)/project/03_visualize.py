@@ -1,10 +1,3 @@
-"""
-03_visualize.py
-----------------
-Step 3 of the pipeline: reproduce every chart used in the final report with
-Matplotlib / Seaborn, saved to charts/.
-"""
-
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
