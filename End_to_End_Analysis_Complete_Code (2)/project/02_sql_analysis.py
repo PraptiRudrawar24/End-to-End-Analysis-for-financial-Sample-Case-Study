@@ -1,11 +1,3 @@
-"""
-02_sql_analysis.py
--------------------
-Step 2 of the pipeline: load the cleaned dataset into a SQLite database and
-run the SQL queries that power the report's findings (profitability by
-segment, discount-band impact, product/geo performance, monthly trend).
-"""
-
 import sqlite3
 import pandas as pd
 
@@ -14,8 +6,7 @@ DB_PATH = "data/financial_data.db"
 
 
 def build_database(csv_path: str = CLEAN_CSV_PATH, db_path: str = DB_PATH) -> sqlite3.Connection:
-    # keep_default_na=False so the literal string "None" (a valid Discount
-    # Band label) is not silently converted to a missing value
+    
     df = pd.read_csv(csv_path, parse_dates=["Date"], keep_default_na=False,
                       na_values=[""])
     conn = sqlite3.connect(db_path)
