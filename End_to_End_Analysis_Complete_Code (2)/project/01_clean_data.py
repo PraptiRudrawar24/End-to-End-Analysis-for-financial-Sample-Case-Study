@@ -1,11 +1,3 @@
-"""
-01_clean_data.py
------------------
-Step 1 of the pipeline: load the raw Financial Sample dataset, validate it,
-fix the missing Discount Band values, and save a cleaned CSV for downstream
-SQL / Pandas analysis.
-"""
-
 import pandas as pd
 
 RAW_PATH = "data/Sample_data.xlsx"
@@ -14,7 +6,6 @@ CLEAN_CSV_PATH = "data/cleaned_financial_data.csv"
 
 def load_raw(path: str = RAW_PATH) -> pd.DataFrame:
     df = pd.read_excel(path)
-    # Strip stray whitespace from column names (source file has " Sales")
     df.columns = [c.strip() for c in df.columns]
     return df
 
@@ -25,7 +16,7 @@ def validate_and_clean(df: pd.DataFrame) -> pd.DataFrame:
     print("\nMissing values per column:")
     print(df.isna().sum()[df.isna().sum() > 0])
 
-    # Discount Band is blank for 53 rows -> confirm every one has Discounts == 0
+    
     missing_band = df["Discount Band"].isna()
     all_zero_discount = (df.loc[missing_band, "Discounts"] == 0).all()
     print(f"\nAll {missing_band.sum()} blank Discount Band rows have Discounts == 0: "
@@ -33,7 +24,7 @@ def validate_and_clean(df: pd.DataFrame) -> pd.DataFrame:
 
     df.loc[missing_band, "Discount Band"] = "None"
 
-    # Cross-check calculated fields
+    
     gross_check = (df["Units Sold"] * df["Sale Price"] - df["Gross Sales"]).abs() > 0.01
     sales_check = (df["Gross Sales"] - df["Discounts"] - df["Sales"]).abs() > 0.01
     profit_check = (df["Sales"] - df["COGS"] - df["Profit"]).abs() > 0.01
@@ -42,7 +33,7 @@ def validate_and_clean(df: pd.DataFrame) -> pd.DataFrame:
     print(f"Sales mismatches: {sales_check.sum()}")
     print(f"Profit mismatches: {profit_check.sum()}")
 
-    # Order the Discount Band as a category for consistent chart ordering downstream
+    
     band_order = ["None", "Low", "Medium", "High"]
     df["Discount Band"] = pd.Categorical(df["Discount Band"], categories=band_order, ordered=True)
 
